@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
 
 namespace BusinessLTDA
 {
@@ -61,6 +63,13 @@ namespace BusinessLTDA
 			app.UseEndpoints(endpoints =>
 			{
 				endpoints.MapControllers();
+			});
+
+			app.UseStaticFiles(new StaticFileOptions
+			{
+				FileProvider = new PhysicalFileProvider(
+					Path.Combine(Directory.GetCurrentDirectory(), "Photos")),
+				RequestPath = "/Photos"
 			});
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using BusinessLTDA.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,9 +18,11 @@ namespace BusinessLTDA.Controllers
 	public class EmployeesController : ControllerBase
 	{
 		private readonly IConfiguration _configuration;
-		public EmployeesController(IConfiguration configuration)
+		private readonly IWebHostEnvironment _webHostEnvironment ;
+		public EmployeesController(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
 		{
 			_configuration = configuration;
+			_webHostEnvironment = webHostEnvironment;
 		}
 
 		[HttpGet]
@@ -135,6 +139,28 @@ namespace BusinessLTDA.Controllers
 				}
 			}
 			return new JsonResult("Empregado demitido");
+		}
+
+		[Route("SaveFile")]
+		[HttpPost]
+		public JsonResult SaveFile()
+		{
+			try
+			{
+				var httpRequest = Request.Form;
+				var postedFile = httpRequest.Files[0];
+				string filename = postedFile.FileName;
+				var physicalPath = _webHostEnvironment.ContentRootPath + "/Photos/" + filename;
+				using(var stream = new FileStream(physicalPath, FileMode.Create))
+				{
+					postedFile.CopyTo(stream);
+				}
+				return new JsonResult(filename);
+			}
+			catch (Exception)
+			{
+				return new JsonResult("anonymous.png");
+			}
 		}
 	}
 }
