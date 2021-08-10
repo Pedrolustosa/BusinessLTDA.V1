@@ -8,10 +8,10 @@ namespace BusinessLTDA.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class DepartmentController : ControllerBase
+	public class DepartmentsController : ControllerBase
 	{
 		private readonly IConfiguration _configuration;
-		public DepartmentController(IConfiguration configuration)
+		public DepartmentsController(IConfiguration configuration)
 		{
 			_configuration = configuration;
 		}
